@@ -1,2 +1,4 @@
 ./apis.txt
 apis.txt
+.env
+./.env
