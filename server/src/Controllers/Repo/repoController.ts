@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { fetchUserPublicRepos, fetchUserStarredRepos, fetchSingleRepo, fetchRepoCommits, fetchRepoContributors, fetchRepoLanguages } from "./repoApis";
+import { fetchUserPublicRepos, fetchUserStarredRepos, fetchSingleRepo, fetchRepoCommits, fetchRepoContributors, fetchRepoLanguages, fetchRepoFilesStructure, fetchFileContent } from "./repoApis";
 
 export const getUserPublicRepos: RequestHandler<{ username: string }> = async (req, res, next) => {
     try {
@@ -82,6 +82,40 @@ export const getRepoLanguages: RequestHandler<{ username: string, reponame: stri
         if (repoLanguages)
             res.status(200).send({ success: true, repoLanguages, message: "Repo languages Found" })
         else res.status(404).send({ success: false, message: "Repo languages Not Found" })
+    } catch (error) {
+        res.status(500).send({ success: false, message: error || "Internal Server Error" })
+
+    }
+}
+
+export const getRepoFilesStructure: RequestHandler = async (req, res, next) => {
+    try {
+        const { username, reponame } = req.body;
+
+        console.log("Start");
+        const fileStructure = await fetchRepoFilesStructure(username, reponame);
+        console.log("end");
+
+        if (fileStructure)
+            res.status(200).send({ success: true, fileStructure, message: "File structure Found" })
+        else res.status(404).send({ success: false, message: "File structure Not Found" })
+    } catch (error) {
+        res.status(500).send({ success: false, message: error || "Internal Server Error" })
+
+    }
+}
+
+export const getFileContent: RequestHandler = async (req, res, next) => {
+    try {
+        const { username, reponame, path } = req.body;
+
+        console.log("Start");
+        const fileContent = await fetchFileContent(username, reponame, path);
+        console.log("end");
+
+        if (fileContent)
+            res.status(200).send({ success: true, fileContent, message: "File Content Found" })
+        else res.status(404).send({ success: false, message: "File Content Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
 
