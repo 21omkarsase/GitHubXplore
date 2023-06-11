@@ -37,8 +37,4 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/user", ProfileRoutes);
 app.use("/repo", RepoRoutes);
 
-app.get("/api", (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
-    return res.status(200).send({ message: "happy request" });
-})
-
 export default app;

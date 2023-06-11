@@ -33,3 +33,14 @@ export const fetchUserFollowings = async (username: string): Promise<{}[] | null
     }
 }
 
+
+export const fetchUserOrganizations = async (username: string): Promise<{}[] | null> => {
+    try {
+        const response = await axios.get(`https://api.github.com/users/${username}/orgs`);
+
+        return response.data;
+    } catch (error) {
+        return null;
+    }
+}
+
