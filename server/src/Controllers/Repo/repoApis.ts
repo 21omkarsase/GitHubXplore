@@ -116,7 +116,6 @@ export const fetchFileContent = async (username: string, reponame: string, path:
         });
 
         const fileContent = Buffer.from(response.data.content, 'base64').toString('utf-8');
-        console.log(typeof fileContent);
 
         return fileContent;
     } catch (error) {

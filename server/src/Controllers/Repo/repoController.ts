@@ -17,7 +17,6 @@ export const getUserPublicRepos: RequestHandler<{ username: string }> = async (r
 export const getUserStarredRepos: RequestHandler<{ username: string }> = async (req, res, next) => {
     try {
         const username = req.params.username;
-        console.log(username);
 
         const starredRepos = await fetchUserStarredRepos(username);
 
@@ -92,9 +91,7 @@ export const getRepoFilesStructure: RequestHandler = async (req, res, next) => {
     try {
         const { username, reponame } = req.body;
 
-        console.log("Start");
         const fileStructure = await fetchRepoFilesStructure(username, reponame);
-        console.log("end");
 
         if (fileStructure)
             res.status(200).send({ success: true, fileStructure, message: "File structure Found" })
@@ -114,11 +111,10 @@ export const getFileContent: RequestHandler = async (req, res, next) => {
         console.log("end");
 
         if (fileContent)
-            res.status(200).send({ success: true, fileContent, message: "File Content Found" })
-        else res.status(404).send({ success: false, message: "File Content Not Found" })
+            res.status(200).send({ success: true, fileContent, message: "File Content Found" });
+        else res.status(404).send({ success: false, message: "File Content Not Found" });
     } catch (error) {
-        res.status(500).send({ success: false, message: error || "Internal Server Error" })
-
+        res.status(500).send({ success: false, message: error || "Internal Server Error" });
     }
 }
 
