@@ -2,3 +2,6 @@
 apis.txt
 .env
 ./.env
+
+.vscode
+./.vscode
