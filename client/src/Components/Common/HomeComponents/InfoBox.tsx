@@ -3,13 +3,14 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom';
 
 interface InfoBoxProps {
+    username: string;
     property: string;
     value: string;
 }
 
-const InfoBox: React.FC<InfoBoxProps> = ({ property, value }) => {
+const InfoBox: React.FC<InfoBoxProps> = ({ username, property, value }) => {
     return (
-        <Link to={`/${property}`} >
+        <Link to={`/${property}/${username}`} >
             <motion.div
                 className="flex justify-between items-center px-5 w-40 h-20 bg-blue-500 rounded-lg"
                 initial={{ opacity: 0, scale: 0 }}

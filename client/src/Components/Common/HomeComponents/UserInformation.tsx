@@ -70,10 +70,10 @@ const UserInformation: React.FC = () => {
                             </motion.a>}
                     </div>}
                 <div className="w-3/4 my-5 flex justify-between">
-                    <InfoTab property="Followers" value={user.followers} />
-                    <InfoTab property="Following" value={user.followings} />
+                    <InfoTab username={user.userName} property="Followers" value={user.followers} />
+                    <InfoTab username={user.userName} property="Following" value={user.followings} />
                 </div>
-                <InfoTab property="Repository" value={user.repoCount} />
+                <InfoTab username={user.userName} property="Repository" value={user.repoCount} />
             </motion.div>
         </motion.div>
     );

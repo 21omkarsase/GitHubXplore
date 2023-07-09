@@ -1,9 +1,13 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
-import { RootState } from '../Store'
-import { fetchUserInfoAPI } from "./userApi"
-import { AxiosError } from 'axios';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { fetchUserFollowers, fetchUserInfo, fetchUserFollowing } from "./userApi";
 
-interface User {
+
+export interface FollowFollowing {
+    login: string;
+    avatar_url: string;
+    [key: string]: any;
+}
+export interface User {
     name: string;
     avatar: string;
     githubUrl: string;
@@ -11,6 +15,8 @@ interface User {
     repoCount: string;
     followers: string;
     followings: string;
+    followersData?: FollowFollowing[];
+    followingData?: FollowFollowing[];
     company?: string;
     blog?: string;
     email?: string;
@@ -19,13 +25,17 @@ interface User {
     orgs?: object;
 }
 
-interface UserState {
+interface UserError {
+    message: string;
+    errorType: 'userInfoError' | 'followersError' | 'followingError';
+}
+export interface UserState {
     users: {
         [key: string]: User;
     };
     user: User,
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
+    error: UserError | null;
 }
 
 const initialState: UserState = {
@@ -57,56 +67,6 @@ const initialState: UserState = {
     error: null,
 }
 
-function isAxiosError(error: any): error is AxiosError {
-    return error.isAxiosError === true;
-}
-
-export const fetchUserInfo = createAsyncThunk<User, string>(
-    'user/fetchUserInfo',
-    async (username: string) => {
-        try {
-            const { user: userInfo } = await fetchUserInfoAPI(username);
-            console.log(userInfo);
-
-
-            const user: User = {
-                name: userInfo.name,
-                avatar: userInfo.avatar_url,
-                githubUrl: userInfo.html_url,
-                userName: userInfo.login,
-                repoCount: userInfo.public_repos,
-                followers: userInfo.followers,
-                followings: userInfo.followings,
-            };
-
-            if (userInfo.bio)
-                user.bio = userInfo.bio;
-            if (userInfo.email)
-                user.email = userInfo.email
-            if (userInfo.twitter_username)
-                user.twitterUserName = userInfo.twitter_username;
-            if (userInfo.blog)
-                user.blog = userInfo.blog;
-
-            return user;
-
-        } catch (error) {
-            if (isAxiosError(error)) {
-                if (error.response)
-                    throw new Error((error.response.data as any).message);
-
-                if (error.request) {
-                    throw new Error("Check your internet connection and try again");
-                }
-
-                throw new Error("Internal Server Error");
-            }
-
-            throw new Error("Internal Server Error");
-        }
-    }
-);
-
 export const userSlice = createSlice({
     name: 'User',
     initialState,
@@ -128,7 +88,44 @@ export const userSlice = createSlice({
             })
             .addCase(fetchUserInfo.rejected, (state, action) => {
                 state.status = 'failed';
-                state.error = action.error.message!;
+                state.error = {
+                    message: action.error.message!,
+                    errorType: 'userInfoError'
+                };
+            })
+            .addCase(fetchUserFollowers.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(fetchUserFollowers.fulfilled, (state, action) => {
+                const username = action.payload["username"];
+
+                state.users[username].followersData = action.payload.followers as FollowFollowing[];
+                state.user.followersData = action.payload.followers as FollowFollowing[];
+                state.status = 'succeeded';
+            })
+            .addCase(fetchUserFollowers.rejected, (state, action) => {
+                state.error = {
+                    message: action.error.message!,
+                    errorType: 'followersError'
+                };
+                state.status = 'failed';
+            })
+            .addCase(fetchUserFollowing.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(fetchUserFollowing.fulfilled, (state, action) => {
+                const username = action.payload.username;
+                state.users[username].followingData = action.payload.following as FollowFollowing[];
+                state.user.followingData = action.payload.following as FollowFollowing[];
+
+                state.status = 'succeeded';
+            })
+            .addCase(fetchUserFollowing.rejected, (state, action) => {
+                state.error = {
+                    message: action.error.message!,
+                    errorType: 'followingError'
+                };
+                state.status = 'failed';
             })
     },
 })

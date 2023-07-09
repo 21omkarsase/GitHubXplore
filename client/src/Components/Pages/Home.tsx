@@ -4,7 +4,6 @@ import UserInformation from '../Common/HomeComponents/UserInformation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../Store'
 
-
 const Home: React.FC = () => {
     const { status, error } = useSelector((state: RootState) => state.user);
 
@@ -17,9 +16,9 @@ const Home: React.FC = () => {
                     <p className="text-center text-gray-600">Loading...</p>
                 </div>
             }
-            {status === 'failed' &&
+            {status === 'failed' && error?.errorType === 'userInfoError' &&
                 <div className="flex justify-center items-center my-10">
-                    <p className="text-center text-red-600">{error}</p>
+                    <p className="text-center text-red-600">{error.message}</p>
                 </div>
             }
         </div>

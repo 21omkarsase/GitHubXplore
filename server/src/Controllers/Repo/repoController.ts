@@ -106,9 +106,7 @@ export const getFileContent: RequestHandler = async (req, res, next) => {
     try {
         const { username, reponame, path } = req.body;
 
-        console.log("Start");
         const fileContent = await fetchFileContent(username, reponame, path);
-        console.log("end");
 
         if (fileContent)
             res.status(200).send({ success: true, fileContent, message: "File Content Found" });

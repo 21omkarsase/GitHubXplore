@@ -4,8 +4,6 @@ import { fetchUserInformation, fetchUserFollowings, fetchUserFollowers, fetchUse
 export const getUserInformation: RequestHandler<{ username: string }> = async (req, res, next) => {
     try {
         const username = req.params.username;
-        console.log(username);
-
         const user = await fetchUserInformation(username);
 
         if (user)

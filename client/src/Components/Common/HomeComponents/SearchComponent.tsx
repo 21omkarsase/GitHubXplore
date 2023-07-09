@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from "framer-motion"
-import { changeCurrentUser, fetchUserInfo } from "../../../Features/userSlice"
+import { changeCurrentUser } from "../../../Features/userSlice"
+import { fetchUserInfo } from '../../../Features/userApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../Store';
 
