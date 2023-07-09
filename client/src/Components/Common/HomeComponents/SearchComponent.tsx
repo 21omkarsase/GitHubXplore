@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { motion } from "framer-motion"
-import { fetchUserInfo } from "../../../Features/userSlice"
+import { changeCurrentUser, fetchUserInfo } from "../../../Features/userSlice"
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../Store';
 
 const SearchComponent: React.FC = () => {
     const [username, setUsername] = useState<string>("");
     const dispatch = useDispatch<AppDispatch>();
+
+    const { users } = useSelector((state: RootState) => state.user)
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
@@ -15,7 +17,13 @@ const SearchComponent: React.FC = () => {
     const submitHandler = (e: React.FormEvent) => {
         e.preventDefault();
 
-        dispatch(fetchUserInfo(username));
+        if (users.hasOwnProperty(username)) {
+            dispatch(changeCurrentUser(username));
+        } else {
+            dispatch(fetchUserInfo(username));
+        }
+
+        setUsername("");
     }
 
     return (

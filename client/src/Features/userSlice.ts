@@ -20,14 +20,28 @@ interface User {
 }
 
 interface UserState {
-    users: User[];
+    users: {
+        [key: string]: User;
+    };
     user: User,
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
 
 const initialState: UserState = {
-    users: [],
+    users: {
+        "21omkarsase": {
+            name: "Omkar Sase",
+            avatar: "https://avatars.githubusercontent.com/u/77478864?v=4",
+            githubUrl: "https://github.com/21omkarsase",
+            userName: "21omkarsase",
+            repoCount: '18',
+            followers: '14',
+            followings: '14',
+            email: "saseomkar214@gmail.com",
+            twitterUserName: "21omkarsase",
+        }
+    },
     user: {
         name: "Omkar Sase",
         avatar: "https://avatars.githubusercontent.com/u/77478864?v=4",
@@ -52,6 +66,8 @@ export const fetchUserInfo = createAsyncThunk<User, string>(
     async (username: string) => {
         try {
             const { user: userInfo } = await fetchUserInfoAPI(username);
+            console.log(userInfo);
+
 
             const user: User = {
                 name: userInfo.name,
@@ -67,8 +83,8 @@ export const fetchUserInfo = createAsyncThunk<User, string>(
                 user.bio = userInfo.bio;
             if (userInfo.email)
                 user.email = userInfo.email
-            if (userInfo.twitterUserName)
-                user.twitterUserName = userInfo.twitterUserName;
+            if (userInfo.twitter_username)
+                user.twitterUserName = userInfo.twitter_username;
             if (userInfo.blog)
                 user.blog = userInfo.blog;
 
@@ -95,6 +111,10 @@ export const userSlice = createSlice({
     name: 'User',
     initialState,
     reducers: {
+        changeCurrentUser(state, action: PayloadAction<string>) {
+            state.user = state.users[action.payload]!;
+            state.status = 'succeeded';
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -103,7 +123,7 @@ export const userSlice = createSlice({
             })
             .addCase(fetchUserInfo.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.users.push(action.payload);
+                state.users[action.payload.userName] = action.payload;
                 state.user = action.payload;
             })
             .addCase(fetchUserInfo.rejected, (state, action) => {
@@ -114,6 +134,6 @@ export const userSlice = createSlice({
 })
 
 
-export const selectedCurrentUser = (state: RootState) => state.user.user;
-
 export default userSlice.reducer;
+
+export const { changeCurrentUser } = userSlice.actions;
