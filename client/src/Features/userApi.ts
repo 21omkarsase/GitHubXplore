@@ -10,7 +10,7 @@ interface Following {
     following: {}[];
 }
 
-function isAxiosError(error: any): error is AxiosError {
+export function isAxiosError(error: any): error is AxiosError {
     return error.isAxiosError === true;
 }
 

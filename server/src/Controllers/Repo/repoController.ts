@@ -4,10 +4,10 @@ import { fetchUserPublicRepos, fetchUserStarredRepos, fetchSingleRepo, fetchRepo
 export const getUserPublicRepos: RequestHandler<{ username: string }> = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const repo = await fetchUserPublicRepos(username);
+        const repos = await fetchUserPublicRepos(username);
 
-        if (repo)
-            res.status(200).send({ success: true, repo, message: "Repos Found" })
+        if (repos)
+            res.status(200).send({ success: true, repos, message: "Repos Found" })
         else res.status(404).send({ success: false, message: "Repos Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })

@@ -2,12 +2,6 @@ import axios from "axios";
 import { config } from "dotenv";
 
 config({ path: "../../.env" })
-interface FileStructure {
-    name: string;
-    type: "dir" | "file";
-    children?: FileStructure[];
-
-}
 
 export const fetchUserPublicRepos = async (username: string): Promise<{}[] | null> => {
     try {
@@ -51,7 +45,7 @@ export const fetchRepoCommits = async (username: string, reponame: string): Prom
 
 export const fetchRepoContributors = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/21omkarsase/Bootstrap/contributors`);
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contributors`);
 
         return response.data;
     } catch (error) {
@@ -68,14 +62,12 @@ export const fetchRepoLanguages = async (username: string, reponame: string): Pr
         return null;
     }
 }
-interface FileStructure {
-    name: string;
-    type: 'file' | 'dir';
-    children?: FileStructure[];
-}
 
-export const fetchRepoFilesStructure = async (username: string, reponame: string, path = ''): Promise<FileStructure[]> => {
+
+export const fetchRepoFilesStructure = async (username: string, reponame: string, path = ''): Promise<{}[]> => {
     try {
+        console.log(path);
+        console.log(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`);
         const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`, {
             headers: {
                 Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
@@ -83,22 +75,20 @@ export const fetchRepoFilesStructure = async (username: string, reponame: string
         });
         const contents = response.data;
 
-        const fileStructure: FileStructure[] = [];
+        const fileStructure = [];
+        if (Array.isArray(contents)) {
 
-        for (const item of contents) {
-            if (item.type === 'dir') {
-                const nestedStructure = await fetchRepoFilesStructure(username, reponame, item.path);
+            for (const item of contents) {
                 fileStructure.push({
                     name: item.name,
                     type: 'dir',
-                    children: nestedStructure,
-                });
-            } else {
-                fileStructure.push({
-                    name: item.name,
-                    type: 'file',
                 });
             }
+        } else {
+            fileStructure.push({
+                name: contents.name,
+                type: 'file',
+            });
         }
 
         return fileStructure;

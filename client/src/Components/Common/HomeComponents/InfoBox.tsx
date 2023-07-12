@@ -10,7 +10,7 @@ interface InfoBoxProps {
 
 const InfoBox: React.FC<InfoBoxProps> = ({ username, property, value }) => {
     return (
-        <Link to={`/${property}/${username}`} >
+        <Link to={`/${property.toLowerCase()}/${username}`} >
             <motion.div
                 className="flex justify-between items-center px-5 w-40 h-20 bg-blue-500 rounded-lg"
                 initial={{ opacity: 0, scale: 0 }}

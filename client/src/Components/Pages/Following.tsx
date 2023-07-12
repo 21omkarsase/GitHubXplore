@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { fetchUserFollowing } from '../../Features/userApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../../Store';
-import FollowFollowingContainer from '../Common/Followers/FollowFollowingContainer';
+import FollowFollowingContainer from '../Common/FollowFollowings/FollowFollowingContainer';
 
 const Following: React.FC = () => {
     const { username } = useParams<{ username: string }>();

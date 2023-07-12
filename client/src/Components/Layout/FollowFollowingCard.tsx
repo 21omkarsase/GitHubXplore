@@ -18,13 +18,13 @@ const FollowFollowingCard: React.FC<FollowerUser> = ({ username, avatar }) => {
     const { users } = useSelector((state: RootState) => state.user)
 
     const fetchUserHandler = () => {
+        navigate("/");
         if (users.hasOwnProperty(username)) {
             dispatch(changeCurrentUser(username));
         } else {
             dispatch(fetchUserInfo(username));
         }
 
-        navigate("/");
     }
 
     return (
@@ -41,11 +41,8 @@ const FollowFollowingCard: React.FC<FollowerUser> = ({ username, avatar }) => {
                 />
                 <div>
                     <h2 onClick={fetchUserHandler} className="text-xl font-bold">{username}</h2>
-                    <p className="text-gray-500">Card content goes here...</p>
                 </div>
             </div>
-
-            <p className="text-gray-500">Additional information...</p>
         </motion.div>
     );
 };
