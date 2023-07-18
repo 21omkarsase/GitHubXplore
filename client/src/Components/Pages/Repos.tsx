@@ -15,7 +15,6 @@ const Repos: React.FC = () => {
     const { username } = useParams<{ username: string }>();
     const { status, currUserRepos, repos, error } = useSelector((state: RootState) => state.repo)
     useEffect(() => {
-        console.log("username", username);
         if (username?.trim() !== "") {
             if (repos[username!] === undefined) {
                 dispatch(fetchUserRepos(username!));

@@ -64,34 +64,21 @@ export const fetchRepoLanguages = async (username: string, reponame: string): Pr
 }
 
 
-export const fetchRepoFilesStructure = async (username: string, reponame: string, path = ''): Promise<{}[]> => {
+export const fetchRepoFilesStructure = async (username: string, reponame: string, path = '', type: 'dir' | 'file'): Promise<{}[] | string> => {
     try {
-        console.log(path);
-        console.log(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`);
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`, {
-            headers: {
-                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
-            }
-        });
-        const contents = response.data;
+        if (type == 'dir') {
 
-        const fileStructure = [];
-        if (Array.isArray(contents)) {
-
-            for (const item of contents) {
-                fileStructure.push({
-                    name: item.name,
-                    type: 'dir',
-                });
-            }
-        } else {
-            fileStructure.push({
-                name: contents.name,
-                type: 'file',
+            const { data } = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`, {
+                headers: {
+                    Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+                }
             });
+            return data;
         }
-
-        return fileStructure;
+        else {
+            const fileContent = await fetchFileContent(username, reponame, path);
+            return fileContent;
+        }
     } catch (error) {
         console.error(error);
         throw error;
@@ -99,15 +86,12 @@ export const fetchRepoFilesStructure = async (username: string, reponame: string
 };
 export const fetchFileContent = async (username: string, reponame: string, path: string): Promise<string> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`, {
+        const response = await axios.get(`https://raw.githubusercontent.com/${username}/${reponame}/main/${path}`, {
             headers: {
                 Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
             }
         });
-
-        const fileContent = Buffer.from(response.data.content, 'base64').toString('utf-8');
-
-        return fileContent;
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;

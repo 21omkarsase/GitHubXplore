@@ -4,6 +4,7 @@ import Home from './Components/Pages/Home';
 import Followers from './Components/Pages/Followers';
 import Following from './Components/Pages/Following';
 import Repos from './Components/Pages/Repos';
+import Repo from './Components/Pages/Repo';
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
         <Route path="/followers/:username" element={<Followers />} />
         <Route path="/following/:username" element={<Following />} />
         <Route path="/repository/:username" element={<Repos />} />
+        <Route path="/:username/:reponame" element={<Repo />} />
       </Routes>
     </Router>
   );

@@ -89,9 +89,9 @@ export const getRepoLanguages: RequestHandler<{ username: string, reponame: stri
 
 export const getRepoFilesStructure: RequestHandler = async (req, res, next) => {
     try {
-        const { username, reponame } = req.body;
+        const { username, reponame, path, type } = req.body;
 
-        const fileStructure = await fetchRepoFilesStructure(username, reponame);
+        const fileStructure = await fetchRepoFilesStructure(username, reponame, path, type);
 
         if (fileStructure)
             res.status(200).send({ success: true, fileStructure, message: "File structure Found" })

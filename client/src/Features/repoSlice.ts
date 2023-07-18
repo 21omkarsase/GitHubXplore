@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchUserRepos } from "./repoApi"
 
+interface FileStructure {
+
+}
 export interface Repo {
     name: string;
     full_name: string;
@@ -13,6 +16,7 @@ export interface Repo {
     clone_url: string;
     primary_language: string;
     created_at: string;
+    tags?: [];
     branches?: [];
     comments?: [];
     languages?: [];

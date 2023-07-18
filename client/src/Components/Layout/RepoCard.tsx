@@ -2,6 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Repo } from '../../Features/repoSlice'
 import { FaGithub } from 'react-icons/fa'
+import { Link } from 'react-router-dom';
 
 interface RepoCardProps {
     repo: Repo;
@@ -19,7 +20,7 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo }) => {
                 className="min-w-[400px] bg-white rounded-lg shadow-lg p-6 max-w-md"
             >
                 <div className="flex gap-5 justify-between">
-                    <h2 className="text-2xl font-bold mb-4">{repo.name}</h2>
+                    <Link to={`/${repo.owner.name}/${repo.name}`}> <h2 className="text-2xl font-bold mb-4">{repo.name}</h2></Link>
                     <a target='_blank' href={repo.github_url}>
                         <FaGithub className='text-2xl' />
                     </a>

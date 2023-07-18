@@ -11,6 +11,7 @@
     "@types/node": "^16.18.34",
     "@types/react": "^18.2.7",
     "@types/react-dom": "^18.2.4",
+    "@types/react-syntax-highlighter": "^15.5.7",
     "axios": "^1.4.0",
     "framer-motion": "^10.12.18",
     "react": "^18.2.0",
@@ -19,6 +20,7 @@
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
+    "react-syntax-highlighter": "^15.5.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -45,6 +47,8 @@
     ]
   },
   "devDependencies": {
+    "@types/prettier": "^2.7.3",
+    "prettier": "^3.0.0",
     "tailwindcss": "^3.3.2",
     "typescript": "^4.9.5"
   }
