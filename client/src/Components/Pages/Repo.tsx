@@ -5,10 +5,11 @@ import { isAxiosError } from '../../Features/userApi';
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import FilesAndFolders from '../Common/Repository/FilesAndFolders';
 
 
 
-interface FileStructure {
+export interface FileStructure {
     name: string;
     path: string;
     url: string;
@@ -17,19 +18,33 @@ interface FileStructure {
     [key: string]: string;
 }
 
-type FileStructureType = FileStructure[];
 const Repo: React.FC = () => {
 
-    const [currPath, setCurrPath] = useState<{ type: 'dir' | 'file', path: string }>({ type: 'dir', path: '' });
-    const [currFileStructure, setCurrFileStructure] = useState<FileStructureType | string>([]);
     const { username, reponame } = useParams<{ username: string, reponame: string }>();
+
+    const [currPath, setCurrPath] = useState<{ name: string, path: string, type: 'dir' | 'file' }>({ name: reponame!, path: "", type: 'dir' });
+    const [breadCrumb, setBreadCrumb] = useState<{ name: string, path: string, type: 'dir' | 'file' }[]>([{ name: reponame!, path: "", type: 'dir' }]);
+
+    const [currFileStructure, setCurrFileStructure] = useState<FileStructure[] | string>([]);
     const [language, setLanguage] = useState<string>("javascript");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const updateCurrPath = (path: string, type: 'dir' | 'file') => {
-        setCurrPath({ type, path });
+
+    const updateCurrPath = (name: string, path: string, type: 'dir' | 'file') => {
+        setCurrPath({ name, path, type });
     }
+
+    const appendBreadCrumb = (name: string, path: string, type: 'dir' | 'file') => {
+        setBreadCrumb((prevState) => [...prevState, { name, path, type }]);
+        updateCurrPath(name, path, type);
+    }
+
+    const sliceBreadCrumb = (idx: number, name: string, path: string, type: 'dir' | 'file') => {
+        setBreadCrumb(breadCrumb.slice(0, idx + 1));
+        updateCurrPath(name, path, type);
+    }
+
 
     useEffect(() => {
         const fetchFileStructure = async () => {
@@ -76,18 +91,25 @@ const Repo: React.FC = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <Link to="/"> Home</Link>
-            <h1 className="text-2xl font-bold mb-4">{username} {"->"} Repositories  {"->"} {reponame}</h1>
+            <Link to="/"> <h1 className='text-2xl'>Home</h1></Link>
+            <nav className="text-sm py-5">
+                <ol className="list-none p-0 inline-flex">
+                    {breadCrumb.map((navLink, idx) => (
+                        <li className="flex items-center">
+                            <span onClick={(() => sliceBreadCrumb(idx, navLink.name, navLink.path, navLink.type))} className="cursor-pointer text-blue-500">
+                                {navLink.name}
+                            </span>
+                            <span className="mx-2">/</span>
+                        </li>
+                    ))}
+                </ol>
+            </nav>
 
             {loading && <p>Loading...</p>}
-            {!loading && Array.isArray(currFileStructure) &&
-                (currFileStructure.map((path) => (
-                    <div key={path.url} onClick={(() => {
-                        updateCurrPath(path.path, path.type);
-                    })} >{path.name}</div>
-                )))
+            {!error && !loading && Array.isArray(currFileStructure) &&
+                <FilesAndFolders addValueToBreadcrumb={appendBreadCrumb} fileStructure={currFileStructure} />
             }
-            {!loading && !Array.isArray(currFileStructure) &&
+            {!error && !loading && !Array.isArray(currFileStructure) &&
                 <pre className='max-h-screen h-screen' style={{ overflowX: 'scroll' }}>
                     <SyntaxHighlighter language={language} style={atomDark}>
                         {currFileStructure}
