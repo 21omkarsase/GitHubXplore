@@ -1,82 +1,81 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchUserRepos } from "./repoApi"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { fetchRepositoryContent } from "./repoApi";
 
-interface FileStructure {
 
-}
-export interface Repo {
+export interface FileStructure {
     name: string;
-    full_name: string;
-    owner: {
-        name: string;
-        avatar_url: string;
-        github_url: string;
-    };
-    github_url: string;
-    clone_url: string;
-    primary_language: string;
-    created_at: string;
-    tags?: [];
-    branches?: [];
-    comments?: [];
+    path: string;
+    url: string;
+    html_url: string;
+    type: 'dir' | 'file';
+    [key: string]: string;
+}
+export interface Path {
+    name: string;
+    path: string;
+    type: 'dir' | 'file'
+}
+export interface RepoState {
+    breadCrumb: Path[];
+    currFileStructure: FileStructure[] | string;
     languages?: [];
+    commits?: [];
     contributors?: [];
-    issues?: [];
-}
-
-interface RepoError {
-    message: string;
-    errorType: 'repoError' | 'singleRepoError' | 'commentsError' | 'branchesError' | 'contributorsError' | 'issuesError' | 'languagesError';
-}
-
-interface RepoState {
-    currUserRepos?: {
-        [key: string]: Repo;
-    };
-    repos: {
-        [key: string]: {
-            [key: string]: Repo,
-        };
-    };
-    status: 'idle' | 'succeeded' | 'failed' | 'pending';
-    error: RepoError | null;
+    loading: {
+        status: boolean,
+        type?: 'filesLoading' | 'commitsLoading' | 'languagesLoading' | 'contributorsLoading'
+    }
+    error: {
+        message: string | null;
+        errorType?: 'filesError' | 'commitsError' | 'languagesError' | 'contributorsError';
+    }
 }
 
 const initialState: RepoState = {
-    repos: {},
-    status: 'idle',
-    error: null
+    breadCrumb: [],
+    loading: { status: false },
+    error: { message: null },
+    currFileStructure: [],
 }
 
-export const repoSlice = createSlice({
+export const reposSlice = createSlice({
     name: 'repo',
     initialState,
     reducers: {
-        changeCurrUserRepos: (state, action: PayloadAction<string>) => {
-            state.status = 'pending';
-            state.currUserRepos = state.repos[action.payload];
-            state.status = 'succeeded';
+        appendBreadCrumb: (state, action: PayloadAction<Path>): void => {
+            if (state.breadCrumb.length === 0 || action.payload.path !== '')
+                state.breadCrumb.push(action.payload);
+        },
+
+        sliceBreadCrumb: (state, action: PayloadAction<{ idx: number, path: Path }>): void => {
+            state.breadCrumb = state.breadCrumb.slice(0, action.payload.idx + 1);
+        },
+
+        clearAndAppendBreadCrumb: (state, action: PayloadAction<Path>): void => {
+            state.breadCrumb = [];
+            state.breadCrumb.push(action.payload);
         }
+
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchUserRepos.pending, (state) => {
-            state.status = 'pending';
+        builder.addCase(fetchRepositoryContent.pending, (state) => {
+            state.loading = { status: true, type: "filesLoading" };
         })
-        builder.addCase(fetchUserRepos.fulfilled, (state, action) => {
-            state.repos[action.payload.username] = action.payload.repos;
-            state.currUserRepos = action.payload.repos;
-            state.status = 'succeeded';
+        builder.addCase(fetchRepositoryContent.fulfilled, (state, action) => {
+            state.currFileStructure = action.payload;
+            console.log("payload", action.payload);
+
+            state.loading = { status: false }
         })
-        builder.addCase(fetchUserRepos.rejected, (state, action) => {
-            state.status = 'failed';
+        builder.addCase(fetchRepositoryContent.rejected, (state, action) => {
             state.error = {
                 message: action.error.message!,
-                errorType: 'repoError'
-            }
-        })
+                errorType: 'filesError',
+            };
+        });
     }
 })
 
-export const { changeCurrUserRepos } = repoSlice.actions;
+export const { appendBreadCrumb, sliceBreadCrumb, clearAndAppendBreadCrumb } = reposSlice.actions
 
-export default repoSlice.reducer;
+export default reposSlice.reducer;

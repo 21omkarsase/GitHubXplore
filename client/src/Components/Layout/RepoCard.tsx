@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Repo } from '../../Features/repoSlice'
+import { Repo } from '../../Features/reposSlice'
 import { FaGithub } from 'react-icons/fa'
 import { Link } from 'react-router-dom';
 

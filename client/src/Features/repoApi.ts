@@ -1,40 +1,28 @@
-import { createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Repo } from "./repoSlice";
-import axios from "axios";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios"
 import { isAxiosError } from "./userApi";
+import { FileStructure, Path } from "./repoSlice";
 
-interface RepoObject {
-    [key: string]: Repo;
-}
+export const fetchRepositoryContent = createAsyncThunk<FileStructure[] | string, { username: string, reponame: string, currPath: Path }>(
+    'repo/fetchRepoContent',
 
-export const fetchUserRepos = createAsyncThunk<{ repos: RepoObject, username: string, }, string>('repo/fetchUserRepos',
-    async (username: string) => {
+    async ({ username, reponame, currPath }) => {
         try {
-            const { data } = await axios.get(`http://localhost:5000/repo/${username}`);
-
-            const repoData = data.repos;
-
-            const repos: RepoObject = {};
-
-            for (const repo of repoData) {
-                const currRepo: Repo = {
-                    name: repo.name,
-                    full_name: repo.full_name || repo.name,
-                    owner: {
-                        name: repo.owner.login!,
-                        avatar_url: repo.owner.avatar_url!,
-                        github_url: repo.owner.html_url,
-                    },
-                    github_url: repo.html_url,
-                    clone_url: repo.clone_url,
-                    primary_language: repo.language,
-                    created_at: repo.created_at,
-                }
-
-                repos[repo.name] = currRepo;
+            const config = {
+                method: 'post',
+                url: 'http://localhost:5000/repo/file-structure',
+                data: {
+                    username,
+                    reponame,
+                    path: currPath.path,
+                    type: currPath.type
+                },
+                "Content-Type": "application/json"
             }
 
-            return { username, repos };
+            const { data } = await axios(config);
+
+            return data.fileStructure;
         } catch (error) {
             if (isAxiosError(error)) {
                 if (error.response)
@@ -49,4 +37,5 @@ export const fetchUserRepos = createAsyncThunk<{ repos: RepoObject, username: st
 
             throw new Error("Internal Server Error");
         }
-    })
+    }
+)
