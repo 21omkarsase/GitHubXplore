@@ -32,7 +32,7 @@ const Repos: React.FC = () => {
             {status === 'succeeded' && <h1 className='text-2xl font-bold mb-4'>{username} {"-->"} Repositories</h1>}
             <div className='flex justify-center flex-wrap gap-5'>
                 {status === 'succeeded' && Object.values(currUserRepos!).map((repo) => (
-                    <RepoCard repo={repo} />
+                    <RepoCard key={repo.github_url} repo={repo} />
                 ))}
             </div>
 

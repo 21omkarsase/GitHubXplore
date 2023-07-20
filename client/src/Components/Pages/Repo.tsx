@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import FilesAndFolders from '../Common/Repository/FilesAndFolders';
 
-import { Path, clearAndAppendBreadCrumb, sliceBreadCrumb } from '../../Features/repoSlice';
+import { Path, changeUserAndRepo, clearAndAppendBreadCrumb, sliceBreadCrumb } from '../../Features/repoSlice';
 
 import { fetchRepositoryContent } from '../../Features/repoApi';
 import { AppDispatch, RootState } from '../../Store';
@@ -14,10 +14,11 @@ const Repo: React.FC = () => {
     const { breadCrumb, loading, error } = useSelector((state: RootState) => state.repo);
 
     useEffect(() => {
-        dispatch(clearAndAppendBreadCrumb({ name: reponame!, path: '', type: 'dir' }))
+        dispatch(changeUserAndRepo({ username: username!, reponame: reponame! }));
+        dispatch(clearAndAppendBreadCrumb({ name: reponame!, path: '', type: 'dir' }));
         if (username && reponame)
             dispatch(fetchRepositoryContent({ username, reponame, currPath: { name: reponame!, path: '', type: 'dir' } }));
-    }, [])
+    }, [username, reponame])
 
     const handlePathChange = (idx: number, path: Path) => {
         dispatch(sliceBreadCrumb({ idx, path: path }));
@@ -33,7 +34,7 @@ const Repo: React.FC = () => {
             <nav className="text-sm py-5">
                 <ol className="list-none p-0 inline-flex">
                     {breadCrumb.map((navLink, idx) => (
-                        <li className="flex items-center">
+                        <li key={idx} className="flex items-center">
                             <span onClick={(() => handlePathChange(idx, navLink))} className="cursor-pointer text-blue-500">
                                 {navLink.name}
                             </span>

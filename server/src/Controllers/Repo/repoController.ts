@@ -49,7 +49,7 @@ export const getRepoCommits: RequestHandler<{ username: string, reponame: string
         const repoCommits = await fetchRepoCommits(username, reponame);
 
         if (repoCommits)
-            res.status(200).send({ success: true, repoCommits, message: "Repo commits Found" })
+            res.status(200).send({ success: true, commits: repoCommits, message: "Repo commits Found" })
         else res.status(404).send({ success: false, message: "Repo commits Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
@@ -64,7 +64,7 @@ export const getRepoContributors: RequestHandler<{ username: string, reponame: s
         const repoContributors = await fetchRepoContributors(username, reponame);
 
         if (repoContributors)
-            res.status(200).send({ success: true, repoContributors, message: "Contributors Found" })
+            res.status(200).send({ success: true, contributors: repoContributors, message: "Contributors Found" })
         else res.status(404).send({ success: false, message: "Contributors Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
@@ -79,7 +79,7 @@ export const getRepoLanguages: RequestHandler<{ username: string, reponame: stri
         const repoLanguages = await fetchRepoLanguages(username, reponame);
 
         if (repoLanguages)
-            res.status(200).send({ success: true, repoLanguages, message: "Repo languages Found" })
+            res.status(200).send({ success: true, languages: repoLanguages, message: "Repo languages Found" })
         else res.status(404).send({ success: false, message: "Repo languages Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
