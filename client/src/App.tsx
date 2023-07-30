@@ -1,26 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './Components/Pages/Home';
+import Followers from './Components/Pages/Followers';
+import Following from './Components/Pages/Following';
+import Repos from './Components/Pages/Repos';
+import Repo from './Components/Pages/Repo';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/followers/:username" element={<Followers />} />
+        <Route path="/following/:username" element={<Following />} />
+        <Route path="/repository/:username" element={<Repos />} />
+        <Route path="/:username/:reponame" element={<Repo />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

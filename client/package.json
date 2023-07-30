@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,11 +11,17 @@
     "@types/node": "^16.18.34",
     "@types/react": "^18.2.7",
     "@types/react-dom": "^18.2.4",
+    "@types/react-syntax-highlighter": "^15.5.7",
     "axios": "^1.4.0",
+    "framer-motion": "^10.12.18",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
+    "react-redux": "^8.1.1",
+    "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
+    "react-syntax-highlighter": "^15.5.0",
+    "tailwind-scrollbar": "^3.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -25,7 +32,6 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
       "react-app/jest"
     ]
   },
@@ -40,5 +46,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/prettier": "^2.7.3",
+    "prettier": "^3.0.0",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^4.9.5"
   }
 }

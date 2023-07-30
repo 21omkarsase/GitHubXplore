@@ -1,13 +1,13 @@
 import { RequestHandler } from "express";
-import { fetchUserPublicRepos, fetchUserStarredRepos, fetchSingleRepo, fetchRepoCommits, fetchRepoContributors, fetchRepoLanguages, fetchRepoFilesStructure, fetchFileContent } from "./repoApis";
+import { fetchUserPublicRepos, fetchUserStarredRepos, fetchSingleRepo, fetchRepoCommits, fetchRepoContributors, fetchRepoLanguages, fetchRepoFilesStructure, fetchFileContent, fetchRepoIssues } from "./repoApis";
 
 export const getUserPublicRepos: RequestHandler<{ username: string }> = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const repo = await fetchUserPublicRepos(username);
+        const repos = await fetchUserPublicRepos(username);
 
-        if (repo)
-            res.status(200).send({ success: true, repo, message: "Repos Found" })
+        if (repos)
+            res.status(200).send({ success: true, repos, message: "Repos Found" })
         else res.status(404).send({ success: false, message: "Repos Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
@@ -17,7 +17,6 @@ export const getUserPublicRepos: RequestHandler<{ username: string }> = async (r
 export const getUserStarredRepos: RequestHandler<{ username: string }> = async (req, res, next) => {
     try {
         const username = req.params.username;
-        console.log(username);
 
         const starredRepos = await fetchUserStarredRepos(username);
 
@@ -50,7 +49,22 @@ export const getRepoCommits: RequestHandler<{ username: string, reponame: string
         const repoCommits = await fetchRepoCommits(username, reponame);
 
         if (repoCommits)
-            res.status(200).send({ success: true, repoCommits, message: "Repo commits Found" })
+            res.status(200).send({ success: true, commits: repoCommits, message: "Repo commits Found" })
+        else res.status(404).send({ success: false, message: "Repo commits Not Found" })
+    } catch (error) {
+        res.status(500).send({ success: false, message: error || "Internal Server Error" })
+
+    }
+}
+
+export const getRepoIssues: RequestHandler<{ username: string, reponame: string }> = async (req, res, next) => {
+    try {
+        const { username, reponame } = req.params;
+
+        const repoCommits = await fetchRepoCommits(username, reponame);
+
+        if (repoCommits)
+            res.status(200).send({ success: true, commits: repoCommits, message: "Repo commits Found" })
         else res.status(404).send({ success: false, message: "Repo commits Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
@@ -65,7 +79,7 @@ export const getRepoContributors: RequestHandler<{ username: string, reponame: s
         const repoContributors = await fetchRepoContributors(username, reponame);
 
         if (repoContributors)
-            res.status(200).send({ success: true, repoContributors, message: "Contributors Found" })
+            res.status(200).send({ success: true, contributors: repoContributors, message: "Contributors Found" })
         else res.status(404).send({ success: false, message: "Contributors Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
@@ -77,11 +91,11 @@ export const getRepoLanguages: RequestHandler<{ username: string, reponame: stri
     try {
         const { username, reponame } = req.params;
 
-        const repoLanguages = await fetchRepoLanguages(username, reponame);
+        const repoIssues = await fetchRepoIssues(username, reponame);
 
-        if (repoLanguages)
-            res.status(200).send({ success: true, repoLanguages, message: "Repo languages Found" })
-        else res.status(404).send({ success: false, message: "Repo languages Not Found" })
+        if (repoIssues)
+            res.status(200).send({ success: true, issues: repoIssues, message: "Issues found" })
+        else res.status(404).send({ success: false, message: "Issues Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
 
@@ -90,11 +104,9 @@ export const getRepoLanguages: RequestHandler<{ username: string, reponame: stri
 
 export const getRepoFilesStructure: RequestHandler = async (req, res, next) => {
     try {
-        const { username, reponame } = req.body;
+        const { username, reponame, path, type } = req.body;
 
-        console.log("Start");
-        const fileStructure = await fetchRepoFilesStructure(username, reponame);
-        console.log("end");
+        const fileStructure = await fetchRepoFilesStructure(username, reponame, path, type);
 
         if (fileStructure)
             res.status(200).send({ success: true, fileStructure, message: "File structure Found" })
@@ -109,16 +121,13 @@ export const getFileContent: RequestHandler = async (req, res, next) => {
     try {
         const { username, reponame, path } = req.body;
 
-        console.log("Start");
         const fileContent = await fetchFileContent(username, reponame, path);
-        console.log("end");
 
         if (fileContent)
-            res.status(200).send({ success: true, fileContent, message: "File Content Found" })
-        else res.status(404).send({ success: false, message: "File Content Not Found" })
+            res.status(200).send({ success: true, fileContent, message: "File Content Found" });
+        else res.status(404).send({ success: false, message: "File Content Not Found" });
     } catch (error) {
-        res.status(500).send({ success: false, message: error || "Internal Server Error" })
-
+        res.status(500).send({ success: false, message: error || "Internal Server Error" });
     }
 }
 

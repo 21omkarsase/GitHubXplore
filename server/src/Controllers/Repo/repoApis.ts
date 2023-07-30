@@ -2,12 +2,6 @@ import axios from "axios";
 import { config } from "dotenv";
 
 config({ path: "../../.env" })
-interface FileStructure {
-    name: string;
-    type: "dir" | "file";
-    children?: FileStructure[];
-
-}
 
 export const fetchUserPublicRepos = async (username: string): Promise<{}[] | null> => {
     try {
@@ -35,6 +29,8 @@ export const fetchSingleRepo = async (username: string, reponame: string): Promi
 
         return response.data;
     } catch (error) {
+        console.log("e1", error);
+
         return null;
     }
 }
@@ -51,7 +47,17 @@ export const fetchRepoCommits = async (username: string, reponame: string): Prom
 
 export const fetchRepoContributors = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/21omkarsase/Bootstrap/contributors`);
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contributors`);
+
+        return response.data;
+    } catch (error) {
+        return null;
+    }
+}
+
+export const fetchRepoIssues = async (username: string, reponame: string): Promise<{}[] | null> => {
+    try {
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/issues`);
 
         return response.data;
     } catch (error) {
@@ -68,40 +74,23 @@ export const fetchRepoLanguages = async (username: string, reponame: string): Pr
         return null;
     }
 }
-interface FileStructure {
-    name: string;
-    type: 'file' | 'dir';
-    children?: FileStructure[];
-}
 
-export const fetchRepoFilesStructure = async (username: string, reponame: string, path = ''): Promise<FileStructure[]> => {
+
+export const fetchRepoFilesStructure = async (username: string, reponame: string, path = '', type: 'dir' | 'file'): Promise<{}[] | string> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`, {
-            headers: {
-                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
-            }
-        });
-        const contents = response.data;
+        if (type == 'dir') {
 
-        const fileStructure: FileStructure[] = [];
-
-        for (const item of contents) {
-            if (item.type === 'dir') {
-                const nestedStructure = await fetchRepoFilesStructure(username, reponame, item.path);
-                fileStructure.push({
-                    name: item.name,
-                    type: 'dir',
-                    children: nestedStructure,
-                });
-            } else {
-                fileStructure.push({
-                    name: item.name,
-                    type: 'file',
-                });
-            }
+            const { data } = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`, {
+                headers: {
+                    Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+                }
+            });
+            return data;
         }
-
-        return fileStructure;
+        else {
+            const fileContent = await fetchFileContent(username, reponame, path);
+            return fileContent;
+        }
     } catch (error) {
         console.error(error);
         throw error;
@@ -109,16 +98,12 @@ export const fetchRepoFilesStructure = async (username: string, reponame: string
 };
 export const fetchFileContent = async (username: string, reponame: string, path: string): Promise<string> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contents/${path}`, {
+        const response = await axios.get(`https://raw.githubusercontent.com/${username}/${reponame}/main/${path}`, {
             headers: {
                 Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
             }
         });
-
-        const fileContent = Buffer.from(response.data.content, 'base64').toString('utf-8');
-        console.log(typeof fileContent);
-
-        return fileContent;
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;
