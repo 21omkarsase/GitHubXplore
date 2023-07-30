@@ -17,12 +17,14 @@ const Repos: React.FC = () => {
         if (username?.trim() !== "") {
             if (repos[username!] === undefined) {
                 dispatch(fetchUserRepos(username!));
-            } else {
-                changeCurrUserRepos(username!);
+            }
+            else {
+                // dispatch(changeCurrUserRepos(username!));
             }
         } else {
             navigate("/");
         }
+        console.log(username);
     }, [dispatch, username])
 
     return (

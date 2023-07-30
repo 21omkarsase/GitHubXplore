@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { fetchUserPublicRepos, fetchUserStarredRepos, fetchSingleRepo, fetchRepoCommits, fetchRepoContributors, fetchRepoLanguages, fetchRepoFilesStructure, fetchFileContent } from "./repoApis";
+import { fetchUserPublicRepos, fetchUserStarredRepos, fetchSingleRepo, fetchRepoCommits, fetchRepoContributors, fetchRepoLanguages, fetchRepoFilesStructure, fetchFileContent, fetchRepoIssues } from "./repoApis";
 
 export const getUserPublicRepos: RequestHandler<{ username: string }> = async (req, res, next) => {
     try {
@@ -57,6 +57,21 @@ export const getRepoCommits: RequestHandler<{ username: string, reponame: string
     }
 }
 
+export const getRepoIssues: RequestHandler<{ username: string, reponame: string }> = async (req, res, next) => {
+    try {
+        const { username, reponame } = req.params;
+
+        const repoCommits = await fetchRepoCommits(username, reponame);
+
+        if (repoCommits)
+            res.status(200).send({ success: true, commits: repoCommits, message: "Repo commits Found" })
+        else res.status(404).send({ success: false, message: "Repo commits Not Found" })
+    } catch (error) {
+        res.status(500).send({ success: false, message: error || "Internal Server Error" })
+
+    }
+}
+
 export const getRepoContributors: RequestHandler<{ username: string, reponame: string }> = async (req, res, next) => {
     try {
         const { username, reponame } = req.params;
@@ -76,11 +91,11 @@ export const getRepoLanguages: RequestHandler<{ username: string, reponame: stri
     try {
         const { username, reponame } = req.params;
 
-        const repoLanguages = await fetchRepoLanguages(username, reponame);
+        const repoIssues = await fetchRepoIssues(username, reponame);
 
-        if (repoLanguages)
-            res.status(200).send({ success: true, languages: repoLanguages, message: "Repo languages Found" })
-        else res.status(404).send({ success: false, message: "Repo languages Not Found" })
+        if (repoIssues)
+            res.status(200).send({ success: true, issues: repoIssues, message: "Issues found" })
+        else res.status(404).send({ success: false, message: "Issues Not Found" })
     } catch (error) {
         res.status(500).send({ success: false, message: error || "Internal Server Error" })
 

@@ -22,13 +22,8 @@ const Languages: React.FC = () => {
         if (languages === undefined) {
             await dispatch(fetchRepositoryLanguages({ username, reponame }));
             setIsOpen(true);
-            console.log(languages);
         } else setIsOpen(true);
     };
-
-    useEffect(() => {
-        console.log(languages);
-    }, [languages])
 
     return (
         <div>

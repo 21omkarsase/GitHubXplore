@@ -26,7 +26,7 @@ const FilesAndFolders: React.FC<currFileStructureProps> = ({ username, reponame 
     }
 
     return (
-        <div className='flex justify-center max-w-[1100px] flex-col'>
+        <div className='col-span-7 flex justify-center flex-col'>
             <div className="py-2 text-white bg-gray-600 grid grid-cols-2 px-5">
                 <h2>{username}</h2>
                 <div className="grid grid-cols-3">
@@ -50,7 +50,7 @@ const FilesAndFolders: React.FC<currFileStructureProps> = ({ username, reponame 
                         </div>
                     ))
                 ) : (
-                    <pre className="max-h-screen h-screen" style={{ overflowX: 'scroll' }}>
+                    <pre className="scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300 max-h-screen h-screen" style={{ overflowX: 'scroll', overflowY: 'scroll' }}>
                         <SyntaxHighlighter language="javascript" style={atomDark}>
                             {fileStructure}
                         </SyntaxHighlighter>

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios"
 import { isAxiosError } from "./userApi";
-import { Commits, Contributor, FileStructure, Languages, Path } from "./repoSlice";
+import { Commits, Contributor, FileStructure, Languages, Path, SingleRepo } from "./repoSlice";
 
 export const fetchRepositoryContent = createAsyncThunk<FileStructure[] | string,
     { username: string, reponame: string, currPath: Path }>(
@@ -40,6 +40,28 @@ export const fetchRepositoryContent = createAsyncThunk<FileStructure[] | string,
             }
         }
     )
+
+export const fetchSingleRepoInformation = createAsyncThunk<SingleRepo, { username: string, reponame: string }>('repos/fetchSingleRepoInformation',
+    async ({ username, reponame }) => {
+        try {
+            const { data } = await axios.get(`http://localhost:5000/repo/single/${username}/${reponame}`);
+            console.log(data);
+            return data.singleRepo;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                if (error.response)
+                    throw new Error((error.response.data as any).message);
+
+                if (error.request) {
+                    throw new Error("Check your internet connection and try again");
+                }
+
+                throw new Error("Internal Server Error");
+            }
+
+            throw new Error("Internal Server Error");
+        }
+    })
 
 export const fetchRepositoryCommits = createAsyncThunk<Commits[],
     { username: string, reponame: string }>(

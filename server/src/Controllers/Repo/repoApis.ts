@@ -29,6 +29,8 @@ export const fetchSingleRepo = async (username: string, reponame: string): Promi
 
         return response.data;
     } catch (error) {
+        console.log("e1", error);
+
         return null;
     }
 }
@@ -46,6 +48,16 @@ export const fetchRepoCommits = async (username: string, reponame: string): Prom
 export const fetchRepoContributors = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
         const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contributors`);
+
+        return response.data;
+    } catch (error) {
+        return null;
+    }
+}
+
+export const fetchRepoIssues = async (username: string, reponame: string): Promise<{}[] | null> => {
+    try {
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/issues`);
 
         return response.data;
     } catch (error) {
