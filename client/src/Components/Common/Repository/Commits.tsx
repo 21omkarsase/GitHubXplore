@@ -19,10 +19,7 @@ const Commits: React.FC = () => {
     };
 
     const handleOpenModal = async () => {
-        if (commits === undefined) {
-            await dispatch(fetchRepositoryCommits({ username, reponame }));
-            setIsOpen(true);
-        } else setIsOpen(true);
+        setIsOpen(true);
     };
 
     return (
@@ -35,7 +32,7 @@ const Commits: React.FC = () => {
             </button>
             {isOpen && (
                 <motion.div
-                    className={`p-4 left-[25%] top-20 shadow-lg fixed flex justify-center bg-white overflow-y-scroll`}
+                    className={`p-4 left-[25%] right-[25%] top-20 shadow-lg fixed  bg-white overflow-y-scroll`}
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: isOpen ? 1 : 0 }}
                     transition={{ duration: 0.5 }}
@@ -60,7 +57,7 @@ const Commits: React.FC = () => {
                                             </div>
                                             <p className="text-black">{commit.commit.committer.date.split("T")[0]} {" | "} {commit.commit.committer.date.split("T")[1].split("Z"[0])}</p>
                                         </div>
-                                        <p className="mx-10 text-black">{commit.commit.message}</p>
+                                        <a href={commit.html_url} target="_blank" className="mx-10 text-black">{commit.commit.message}</a>
                                     </div>
                                 ))}
                         </div>

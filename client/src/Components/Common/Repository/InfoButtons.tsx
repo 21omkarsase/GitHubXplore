@@ -10,18 +10,18 @@ interface InfoButtonsProps {
 
 const InfoButtons: React.FC<InfoButtonsProps> = ({ forks, watchers, size }) => {
     return (
-        <div className='grid grid-cols-12'>
-            <div className='col-span-3 px-3 py-1 bg-blue-400 flex justify-between gap-1 rounded-md items-center'>
+        <div className='flex justify-between'>
+            <div className='px-3 py-1 bg-blue-400 flex justify-between gap-1 rounded-md items-center'>
                 <span><AiOutlineEye /></span>
                 <span>Watchers</span>
                 <span>{watchers}</span>
             </div>
-            <div className='col-start-5 col-span-3 px-3 py-1 bg-blue-400 flex justify-between gap-1 rounded-md items-center'>
+            <div className='col-span-3 px-3 py-1 bg-blue-400 flex justify-between gap-1 rounded-md items-center'>
                 <span><BiGitRepoForked /></span>
                 <span>Forks</span>
                 <span>{forks}</span>
             </div>
-            <div className='col-start-9 col-span-3 px-3 py-1 bg-blue-400 flex justify-between gap-1 rounded-md items-center'>
+            <div className='col-span-3 px-3 py-1 bg-blue-400 flex justify-between gap-1 rounded-md items-center'>
                 <span><AiFillFileAdd /></span>
                 <span>Size</span>
                 <span>{size}</span>

@@ -5,7 +5,11 @@ config({ path: "../../.env" })
 
 export const fetchUserPublicRepos = async (username: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/users/${username}/repos`);
+        const response = await axios.get(`https://api.github.com/users/${username}/repos`, {
+            headers: {
+                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+            }
+        });
 
         return response.data;
     } catch (error) {
@@ -15,7 +19,11 @@ export const fetchUserPublicRepos = async (username: string): Promise<{}[] | nul
 
 export const fetchUserStarredRepos = async (username: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/users/${username}/starred`);
+        const response = await axios.get(`https://api.github.com/users/${username}/starred`, {
+            headers: {
+                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+            }
+        });
 
         return response.data;
     } catch (error) {
@@ -25,7 +33,11 @@ export const fetchUserStarredRepos = async (username: string): Promise<{}[] | nu
 
 export const fetchSingleRepo = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}`);
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}`, {
+            headers: {
+                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+            }
+        });
 
         return response.data;
     } catch (error) {
@@ -37,7 +49,11 @@ export const fetchSingleRepo = async (username: string, reponame: string): Promi
 
 export const fetchRepoCommits = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/commits`);
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/commits`, {
+            headers: {
+                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+            }
+        });
 
         return response.data;
     } catch (error) {
@@ -47,7 +63,11 @@ export const fetchRepoCommits = async (username: string, reponame: string): Prom
 
 export const fetchRepoContributors = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contributors`);
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/contributors`, {
+            headers: {
+                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+            }
+        });
 
         return response.data;
     } catch (error) {
@@ -57,7 +77,11 @@ export const fetchRepoContributors = async (username: string, reponame: string):
 
 export const fetchRepoIssues = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/issues`);
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/issues`, {
+            headers: {
+                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+            }
+        });
 
         return response.data;
     } catch (error) {
@@ -67,7 +91,11 @@ export const fetchRepoIssues = async (username: string, reponame: string): Promi
 
 export const fetchRepoLanguages = async (username: string, reponame: string): Promise<{}[] | null> => {
     try {
-        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/languages`);
+        const response = await axios.get(`https://api.github.com/repos/${username}/${reponame}/languages`, {
+            headers: {
+                Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+            }
+        });
 
         return response.data;
     } catch (error) {

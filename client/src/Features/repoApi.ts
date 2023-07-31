@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios"
 import { isAxiosError } from "./userApi";
-import { Commits, Contributor, FileStructure, Languages, Path, SingleRepo } from "./repoSlice";
+import { Commits, Contributor, FileStructure, Issue, Languages, Path, SingleRepo } from "./repoSlice";
 
 export const fetchRepositoryContent = createAsyncThunk<FileStructure[] | string,
     { username: string, reponame: string, currPath: Path }>(
@@ -88,10 +88,37 @@ export const fetchRepositoryCommits = createAsyncThunk<Commits[],
         }
     )
 
+export const fetchRepositoryIssues = createAsyncThunk<Issue[],
+    { username: string, reponame: string }>(
+        'repo/fetchRepoIssues',
+        async ({ username, reponame }) => {
+            try {
+                const { data } = await axios.get(`http://localhost:5000/repo/issues/${username}/${reponame}`);
+                console.log("issues", data);
+
+                return data.issues;
+            } catch (error) {
+                if (isAxiosError(error)) {
+                    if (error.response)
+                        throw new Error((error.response.data as any).message);
+
+                    if (error.request) {
+                        throw new Error("Check your internet connection and try again");
+                    }
+
+                    throw new Error("Internal Server Error");
+                }
+
+                throw new Error("Internal Server Error");
+            }
+        }
+    )
+
 export const fetchRepositoryLanguages = createAsyncThunk<Languages, { username: string, reponame: string }>(
     'repo/fetchRepoLanguages', async ({ username, reponame }) => {
         try {
             const { data } = await axios.get(`http://localhost:5000/repo/languages/${username}/${reponame}`)
+            console.log("data", data);
 
             return data.languages;
         } catch (error) {

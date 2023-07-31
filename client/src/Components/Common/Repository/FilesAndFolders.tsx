@@ -8,8 +8,7 @@ import { AppDispatch, RootState } from '../../../Store';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Commits from './Commits';
-import Languages from './Languages';
-import Contributors from './Contributors';
+import Issues from './Issues';
 
 interface currFileStructureProps {
     username: string;
@@ -26,16 +25,15 @@ const FilesAndFolders: React.FC<currFileStructureProps> = ({ username, reponame 
     }
 
     return (
-        <div className='col-span-7 flex justify-center flex-col'>
-            <div className="py-2 text-white bg-gray-600 grid grid-cols-2 px-5">
+        <div className='col-span-7'>
+            <div className="py-2 text-white bg-gray-600 flex items-center justify-between px-5">
                 <h2>{username}</h2>
-                <div className="grid grid-cols-3">
+                <div className="flex gap-3">
+                    <h2 className="col-span-1 cursor-pointer"><Issues /></h2>
                     <h2 className="col-span-1 cursor-pointer"><Commits /></h2>
-                    <h2 className="col-span-1 cursor-pointer"><Languages /></h2>
-                    <h2 className="col-span-1 cursor-pointer"><Contributors /> </h2>
                 </div>
             </div>
-            <div className="flex flex-col file-folders">
+            <div>
                 {Array.isArray(fileStructure) ? (
                     fileStructure.map((path) => (
                         <div key={path.html_url} className="bg-gray-400 flex items-center justify-between px-6 py-3">
@@ -50,14 +48,14 @@ const FilesAndFolders: React.FC<currFileStructureProps> = ({ username, reponame 
                         </div>
                     ))
                 ) : (
-                    <pre className="scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300 max-h-screen h-screen" style={{ overflowX: 'scroll', overflowY: 'scroll' }}>
+                    <pre className="scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300 max-h-screen " style={{ overflowY: 'scroll' }}>
                         <SyntaxHighlighter language="javascript" style={atomDark}>
                             {fileStructure}
                         </SyntaxHighlighter>
                     </pre>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 

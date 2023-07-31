@@ -5,7 +5,7 @@ import FilesAndFolders from '../Common/Repository/FilesAndFolders';
 
 import { Path, changeUserAndRepo, clearAndAppendBreadCrumb, sliceBreadCrumb } from '../../Features/repoSlice';
 
-import { fetchRepositoryContent, fetchSingleRepoInformation } from '../../Features/repoApi';
+import { fetchRepositoryCommits, fetchRepositoryContent, fetchRepositoryContributors, fetchRepositoryIssues, fetchRepositoryLanguages, fetchSingleRepoInformation } from '../../Features/repoApi';
 import { AppDispatch, RootState } from '../../Store';
 import RepoInformation from '../Common/Repository/RepoInformation';
 
@@ -16,11 +16,16 @@ const Repo: React.FC = () => {
 
 
     useEffect(() => {
-        dispatch(changeUserAndRepo({ username: username!, reponame: reponame! }));
-        dispatch(clearAndAppendBreadCrumb({ name: reponame!, path: '', type: 'dir' }));
-        if (username && reponame) {
-            dispatch(fetchSingleRepoInformation({ username: username!, reponame: reponame! }));
-            dispatch(fetchRepositoryContent({ username, reponame, currPath: { name: reponame!, path: '', type: 'dir' } }));
+        if (username && username.trim().length > 0 && reponame && reponame.trim().length > 0) {
+            dispatch(fetchRepositoryCommits({ username: username, reponame: reponame }));
+            dispatch(fetchRepositoryIssues({ username: username, reponame: reponame }))
+            dispatch(fetchRepositoryLanguages({ username: username, reponame: reponame }))
+            dispatch(fetchRepositoryContributors({ username: username, reponame: reponame }))
+            dispatch(fetchSingleRepoInformation({ username: username, reponame: reponame }));
+            dispatch(fetchRepositoryContent({ username, reponame, currPath: { name: reponame, path: '', type: 'dir' } }));
+
+            dispatch(changeUserAndRepo({ username: username, reponame: reponame }));
+            dispatch(clearAndAppendBreadCrumb({ name: reponame, path: '', type: 'dir' }));
 
         }
     }, [username, reponame])
@@ -64,8 +69,8 @@ const Repo: React.FC = () => {
                 }
             </div>
             {
-                !loading.status && error.message === null &&
-                <p>{error.message}</p>
+                !loading.status && error.message !== null &&
+                < p > {error.message}</p>
             }
         </div >
     )
