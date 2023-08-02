@@ -8,6 +8,7 @@ import { Path, changeUserAndRepo, clearAndAppendBreadCrumb, sliceBreadCrumb } fr
 import { fetchRepositoryCommits, fetchRepositoryContent, fetchRepositoryContributors, fetchRepositoryIssues, fetchRepositoryLanguages, fetchSingleRepoInformation } from '../../Features/repoApi';
 import { AppDispatch, RootState } from '../../Store';
 import RepoInformation from '../Common/Repository/RepoInformation';
+import Loading from '../Layout/Loading';
 
 const Repo: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -38,42 +39,41 @@ const Repo: React.FC = () => {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <Link to="/">
-                <h1 className='text-2xl'>Home</h1>
-            </Link>
+        <>{
+            loading.status ? <Loading /> :
+                <div className="container mx-auto p-4">
+                    <Link to="/">
+                        <h1 className='text-2xl'>Home</h1>
+                    </Link>
 
-            <nav className="text-sm py-5">
-                <ol className="list-none p-0 inline-flex">
-                    {breadCrumb.map((navLink, idx) => (
-                        <li key={idx} className="flex items-center">
-                            <span onClick={(() => handlePathChange(idx, navLink))} className="cursor-pointer text-blue-500">
-                                {navLink.name}
-                            </span>
-                            <span className="mx-2">/</span>
-                        </li>
-                    ))}
-                </ol>
-            </nav>
-
-            {
-                loading.status === true && loading.type === 'filesLoading' &&
-                <p>Loading...</p>}
-            <div className='grid grid-cols-12'>
-                {
-                    loading.status === false && error.message === null &&
-                    <FilesAndFolders reponame={reponame!} username={username!} />
-                }
-                {
-                    loading.status === false && error.message === null && repoInfo &&
-                    <RepoInformation />
-                }
-            </div>
-            {
-                !loading.status && error.message !== null &&
-                < p > {error.message}</p>
-            }
-        </div >
+                    <nav className="text-sm py-5">
+                        <ol className="list-none p-0 inline-flex">
+                            {breadCrumb.map((navLink, idx) => (
+                                <li key={idx} className="flex items-center">
+                                    <span onClick={(() => handlePathChange(idx, navLink))} className="cursor-pointer text-blue-500">
+                                        {navLink.name}
+                                    </span>
+                                    <span className="mx-2">/</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </nav>
+                    <div className='grid grid-cols-12'>
+                        {
+                            loading.status === false && error.message === null &&
+                            <FilesAndFolders reponame={reponame!} username={username!} />
+                        }
+                        {
+                            loading.status === false && error.message === null && repoInfo &&
+                            <RepoInformation />
+                        }
+                    </div>
+                    {
+                        !loading.status && error.message !== null &&
+                        < p > {error.message}</p>
+                    }
+                </div>
+        }</>
     )
 }
 
