@@ -10,7 +10,7 @@ interface InfoButtonsProps {
 
 const InfoButtons: React.FC<InfoButtonsProps> = ({ forks, watchers, size }) => {
     return (
-        <div className='flex justify-between'>
+        <div className='flex gap-5 flex-wrap '>
             <div className='px-3 py-1 bg-blue-400 flex justify-between gap-1 rounded-md items-center'>
                 <span><AiOutlineEye /></span>
                 <span>Watchers</span>

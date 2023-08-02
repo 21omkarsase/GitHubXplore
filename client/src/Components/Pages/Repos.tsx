@@ -24,7 +24,6 @@ const Repos: React.FC = () => {
         } else {
             navigate("/");
         }
-        console.log(username);
     }, [dispatch, username])
 
     return (

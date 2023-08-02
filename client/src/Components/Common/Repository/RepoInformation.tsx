@@ -51,7 +51,7 @@ const RepoInformation = () => {
                         {
                             languages &&
                             Object.entries(languages).map(([key, value], idx) => (
-                                <Pill tag={key} />
+                                <Pill key={idx} tag={key} />
                             ))
                         }
                     </div>

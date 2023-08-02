@@ -8,6 +8,7 @@ export const fetchRepositoryContent = createAsyncThunk<FileStructure[] | string,
         'repo/fetchRepoContent',
 
         async ({ username, reponame, currPath }) => {
+
             try {
                 const config = {
                     method: 'post',
@@ -26,8 +27,14 @@ export const fetchRepositoryContent = createAsyncThunk<FileStructure[] | string,
                 return data.fileStructure;
             } catch (error) {
                 if (isAxiosError(error)) {
-                    if (error.response)
-                        throw new Error((error.response.data as any).message);
+                    if (error.response) {
+                        if (currPath.type === 'file') {
+                            throw new Error("Content Not Found");
+                        }
+                        else {
+                            throw new Error("File Structure Not Found");
+                        }
+                    }
 
                     if (error.request) {
                         throw new Error("Check your internet connection and try again");
@@ -45,7 +52,6 @@ export const fetchSingleRepoInformation = createAsyncThunk<SingleRepo, { usernam
     async ({ username, reponame }) => {
         try {
             const { data } = await axios.get(`http://localhost:5000/repo/single/${username}/${reponame}`);
-            console.log(data);
             return data.singleRepo;
         } catch (error) {
             if (isAxiosError(error)) {
@@ -94,7 +100,6 @@ export const fetchRepositoryIssues = createAsyncThunk<Issue[],
         async ({ username, reponame }) => {
             try {
                 const { data } = await axios.get(`http://localhost:5000/repo/issues/${username}/${reponame}`);
-                console.log("issues", data);
 
                 return data.issues;
             } catch (error) {
@@ -118,7 +123,6 @@ export const fetchRepositoryLanguages = createAsyncThunk<Languages, { username: 
     'repo/fetchRepoLanguages', async ({ username, reponame }) => {
         try {
             const { data } = await axios.get(`http://localhost:5000/repo/languages/${username}/${reponame}`)
-            console.log("data", data);
 
             return data.languages;
         } catch (error) {

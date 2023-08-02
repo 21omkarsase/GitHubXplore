@@ -32,8 +32,9 @@ const Repo: React.FC = () => {
 
     const handlePathChange = (idx: number, path: Path) => {
         dispatch(sliceBreadCrumb({ idx, path: path }));
-        if (username && reponame)
+        if (username && reponame) {
             dispatch(fetchRepositoryContent({ username, reponame, currPath: path }));
+        }
     }
 
     return (

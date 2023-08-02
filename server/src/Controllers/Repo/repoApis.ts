@@ -41,8 +41,6 @@ export const fetchSingleRepo = async (username: string, reponame: string): Promi
 
         return response.data;
     } catch (error) {
-        console.log("e1", error);
-
         return null;
     }
 }
@@ -104,7 +102,7 @@ export const fetchRepoLanguages = async (username: string, reponame: string): Pr
 }
 
 
-export const fetchRepoFilesStructure = async (username: string, reponame: string, path = '', type: 'dir' | 'file'): Promise<{}[] | string> => {
+export const fetchRepoFilesStructure = async (username: string, reponame: string, path = '', type: 'dir' | 'file'): Promise<{}[] | string | null> => {
     try {
         if (type == 'dir') {
 
@@ -116,15 +114,24 @@ export const fetchRepoFilesStructure = async (username: string, reponame: string
             return data;
         }
         else {
-            const fileContent = await fetchFileContent(username, reponame, path);
-            return fileContent;
+            const { data } = await axios.get(`https://raw.githubusercontent.com/${username}/${reponame}/main/${path}`, {
+                headers: {
+                    Authorization: `Bearer ${process.env.GITHUB_PERSONAL_TOKEN}`
+                }
+            });
+
+            if (!data) {
+                return [];
+            }
+
+            return data;
         }
     } catch (error) {
-        console.error(error);
-        throw error;
+
+        return null;
     }
 };
-export const fetchFileContent = async (username: string, reponame: string, path: string): Promise<string> => {
+export const fetchFileContent = async (username: string, reponame: string, path: string): Promise<string | null> => {
     try {
         const response = await axios.get(`https://raw.githubusercontent.com/${username}/${reponame}/main/${path}`, {
             headers: {
@@ -133,8 +140,7 @@ export const fetchFileContent = async (username: string, reponame: string, path:
         });
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw error;
+        return null;
     }
 };
 

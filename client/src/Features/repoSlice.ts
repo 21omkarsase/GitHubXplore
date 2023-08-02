@@ -138,7 +138,9 @@ export const reposSlice = createSlice({
         builder.addCase(fetchRepositoryContent.fulfilled, (state, action) => {
             state.currFileStructure = action.payload;
 
+
             state.loading = { status: false }
+            state.error.message = null;
         })
         builder.addCase(fetchRepositoryContent.rejected, (state, action) => {
             state.loading = { status: false };
