@@ -5,6 +5,7 @@ import Followers from './Components/Pages/Followers';
 import Following from './Components/Pages/Following';
 import Repos from './Components/Pages/Repos';
 import Repo from './Components/Pages/Repo';
+import Loading from './Components/Layout/Loading';
 
 const App: React.FC = () => {
   return (

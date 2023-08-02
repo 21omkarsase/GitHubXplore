@@ -47,9 +47,6 @@ export const reposSlice = createSlice({
             state.status = 'pending';
             state.currUserRepos = state.repos[action.payload];
             state.status = 'succeeded';
-            console.log(state.repos[action.payload]);
-            console.log(state.repos);
-
         }
     },
     extraReducers: (builder) => {

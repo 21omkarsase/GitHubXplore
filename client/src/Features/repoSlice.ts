@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { fetchRepositoryCommits, fetchRepositoryContent, fetchRepositoryContributors, fetchRepositoryLanguages, fetchSingleRepoInformation } from "./repoApi";
+import { fetchRepositoryCommits, fetchRepositoryContent, fetchRepositoryContributors, fetchRepositoryIssues, fetchRepositoryLanguages, fetchSingleRepoInformation } from "./repoApi";
 
 import { Repo } from "./reposSlice";
+import { User } from "./userSlice";
 
 export interface SingleRepo extends Repo {
     topics: string[];
@@ -56,6 +57,18 @@ export interface Commits {
     [key: string]: unknown;
 }
 
+export interface Issue {
+    title: string;
+    html_url: string;
+    created_at: string;
+    user: {
+        avatar_url: string;
+        login: string;
+        html_url: string;
+        [key: string]: any;
+    };
+}
+
 export interface Languages {
     [key: string]: number;
 }
@@ -68,14 +81,15 @@ export interface RepoState {
     currFileStructure: FileStructure[] | string;
     languages?: { [key: string]: number };
     commits?: Commits[];
+    issues?: Issue[];
     contributors?: Contributor[];
     loading: {
         status: boolean,
-        type?: 'filesLoading' | 'commitsLoading' | 'languagesLoading' | 'contributorsLoading' | 'repoInfoLoading'
+        type?: 'filesLoading' | 'commitsLoading' | 'issuesLoading' | 'languagesLoading' | 'contributorsLoading' | 'repoInfoLoading'
     }
     error: {
         message: string | null;
-        errorType?: 'filesError' | 'commitsError' | 'languagesError' | 'contributorsError' | 'repoInfoError';
+        errorType?: 'filesError' | 'commitsError' | 'languagesError' | 'issuesError' | 'contributorsError' | 'repoInfoError';
     }
 }
 
@@ -124,7 +138,9 @@ export const reposSlice = createSlice({
         builder.addCase(fetchRepositoryContent.fulfilled, (state, action) => {
             state.currFileStructure = action.payload;
 
+
             state.loading = { status: false }
+            state.error.message = null;
         })
         builder.addCase(fetchRepositoryContent.rejected, (state, action) => {
             state.loading = { status: false };
@@ -147,6 +163,21 @@ export const reposSlice = createSlice({
             state.error = {
                 message: action.error.message!,
                 errorType: 'commitsError',
+            };
+        })
+
+        builder.addCase(fetchRepositoryIssues.pending, (state) => {
+            state.loading = { status: true, type: 'issuesLoading' }
+        })
+        builder.addCase(fetchRepositoryIssues.fulfilled, (state, action) => {
+            state.issues = action.payload;
+            state.loading = { status: false };
+            state.error = { message: null };
+        })
+        builder.addCase(fetchRepositoryIssues.rejected, (state, action) => {
+            state.error = {
+                message: action.error.message!,
+                errorType: 'issuesError',
             };
         })
 
